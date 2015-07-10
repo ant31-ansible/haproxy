@@ -1,0 +1,34 @@
+---
+- name: set_fact
+  set_fact:
+  args:
+    ha_proxy: >
+      {%- for host in groups[item] -%}
+      {%- set _p = ha -%}
+      {%- for backend_name, backend  in hostvars[host].haproxy_backends.iteritems() -%}
+      {%- if backend_name not in ha -%}
+      {%- set _d = ha.update({backend_name: {'servers': [], 'domain': backend['domain']}}) -%}
+      {%- endif -%}
+      {%- set host_ip = hostvars[host].ansible_ssh_host|default(hostvars[host].ansible_default_ipv4.address)-%}
+      {%- set _d = ha[backend_name]['servers'].append({
+      "name": host,
+      "host": host_ip,
+      "port": hostvars[host].nat|default(0) |int+backend['port']
+      })
+      -%}
+      {%- endfor -%}
+      {%- endfor -%}
+      {{ ha }}
+  with_items: haproxy_groups|union([{{haproxy_default_group|default('haproxy-servers')}}])
+
+- debug:
+    msg: >
+      {{ha}}
+  run_once: yes
+
+- name: Haproxy config
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    validate: "haproxy -c -f %s"
+    backup: yes

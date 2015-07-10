@@ -1,0 +1,36 @@
+---
+haproxy_backends: {}
+haproxy_discover: yes
+haproxy_default_group: haproxy-servers
+haproxy_groups: []
+
+# haproxy_backends:
+#   siteA:
+#     domain: www.siteA.com
+#     servers:
+#       - name: app1
+#         host: 10.3.0.1
+#         port: 5000
+
+#       - name: app2
+#         host: 10.3.0.2
+#         port: 5000
+
+#       - name: app3
+#         host: 10.3.0.3
+#         port: 5000
+
+#   siteB:
+#     domain: www.siteB.com
+#     servers:
+#       - name: app1
+#         host: 10.32.4.1
+#         port: 80
+
+#       - name: app2
+#         host: 10.32.4.2
+#         port: 80
+
+#       - name: app3
+#         host: 10.32.4.3
+#         port: 80
